@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "991361211277",
+    "firebase_url": "https://mtg-project-edd63.firebaseio.com",
+    "project_id": "mtg-project-edd63",
+    "storage_bucket": "mtg-project-edd63.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:991361211277:android:13c3c6a65bcbec53",
+        "android_client_info": {
+          "package_name": "com.example.myapplication"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "991361211277-od9f15ghl73515gf08nvgg5k85e1d0t3.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.myapplication",
+            "certificate_hash": "6a8196525a8b0307470fd7b4ff2ab777cc3429e0"
+          }
+        },
+        {
+          "client_id": "991361211277-0tdme3gdncdmoh76dr5o123tbh3fp8su.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAIDXy0ZQN9OYz5qY5SC3xhmIX6UHwPt-M"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "991361211277-0tdme3gdncdmoh76dr5o123tbh3fp8su.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
