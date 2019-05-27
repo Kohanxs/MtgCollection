@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import com.google.android.gms.auth.api.Auth;
@@ -36,13 +37,16 @@ import com.google.firebase.auth.GoogleAuthProvider;
 public class MainActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener, View.OnClickListener {
     SignInButton signInButton;
     Button signOutButton;
+    Button logInButton;
+    Button createAccButton;
+    Button scanButton;
     TextView statusTextView;
+    EditText emailEditText;
+    EditText passEditText;
     GoogleApiClient mGoogleApiClient;
     private static final String TAG = "SignInActivity";
     private static final int RC_SIGN_IN = 9001;
     private FirebaseAuth mAuth;
-    private static String idToken= "AIzaSyCPEhmw3HIvKyvDu2DNpkG5zs-iXWxo7Po";
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +60,14 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
         signInButton.setOnClickListener(this);
         signOutButton = (Button) findViewById(R.id.logout);
         signOutButton.setOnClickListener(this);
+        logInButton = (Button) findViewById(R.id.login);
+        logInButton.setOnClickListener(this);
+        createAccButton = (Button) findViewById(R.id.createAcc);
+        createAccButton.setOnClickListener(this);
+        scanButton= (Button) findViewById(R.id.scanButton);
+        scanButton.setOnClickListener(this);
+        emailEditText = (EditText) findViewById(R.id.emailInput);
+        passEditText = (EditText) findViewById(R.id.passInput);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -77,10 +89,57 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
             case R.id.logout:
                 signOut();
                 break;
-
+            case R.id.createAcc:
+                createEmailAccount();
+                break;
+            case R.id.login:
+                logInWithEmail();
+                break;
+            case R.id.scanButton:
+                scanCards();
+                break;
         }
 
     }
+
+    private void scanCards() {
+        Intent temp = new Intent(this,ScanActivity.class);
+        startActivity(temp);
+    }
+
+    private void logInWithEmail() {
+
+        mAuth.signInWithEmailAndPassword(emailEditText.getText().toString(),passEditText.getText().toString()).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                if(task.isSuccessful()){
+                    statusTextView.setText("Log In succsesful, hello: "+mAuth.getCurrentUser().getUid());
+                } else {
+                    statusTextView.setText("Log in failed");
+                }
+            }
+        });
+
+
+
+
+    }
+
+    private void createEmailAccount(){
+        mAuth.createUserWithEmailAndPassword(emailEditText.getText().toString(),passEditText.getText().toString()).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                if(task.isSuccessful()){
+                    statusTextView.setText("New user created");
+                } else {
+                    Log.w(TAG,"createEmailAccount error",task.getException());
+                    statusTextView.setText("Error creating user" + task.getException().getMessage());
+                }
+
+            }
+        });
+    }
+
     private void signIn(){
         Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
         startActivityForResult(signInIntent, RC_SIGN_IN);
@@ -135,6 +194,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
                 statusTextView.setText("SignedOut");
             }
         });
+        mAuth.signOut();
     }
 
     @Override
