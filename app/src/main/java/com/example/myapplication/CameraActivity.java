@@ -87,7 +87,7 @@ public class CameraActivity extends AppCompatActivity implements View.OnClickLis
     boolean flag = false;
 
     RequestQueue queue;
-    String url = "https://api.magicthegathering.io/v1/cards?name=";
+    String url = "https://api.scryfall.com/cards/named?exact=";
 
 
     @Override
@@ -160,18 +160,22 @@ public class CameraActivity extends AppCompatActivity implements View.OnClickLis
                 plusButton.setVisibility(View.INVISIBLE);
                 minusButton.setVisibility(View.INVISIBLE);
                 cardView.setVisibility(View.INVISIBLE);
+                captureButton.setVisibility(View.VISIBLE);
 
+                cameraView.setVisibility(View.VISIBLE);
                 addByNameButton.setVisibility(View.VISIBLE);
                 cardnameText.setVisibility(View.VISIBLE);
                 captureButton.setClickable(true);
                 break;
             case VIEW_CARD_CODE:
                 imageAnalysis.removeAnalyzer();
+                cameraView.setVisibility(View.INVISIBLE);
                 acceptButton.setVisibility(View.VISIBLE);
                 denyButton.setVisibility(View.VISIBLE);
                 plusButton.setVisibility(View.VISIBLE);
                 minusButton.setVisibility(View.VISIBLE);
                 cardView.setVisibility(View.VISIBLE);
+                captureButton.setVisibility(View.INVISIBLE);
 
                 addByNameButton.setVisibility(View.INVISIBLE);
                 cardnameText.setVisibility(View.INVISIBLE);
@@ -180,23 +184,22 @@ public class CameraActivity extends AppCompatActivity implements View.OnClickLis
         }
     }
     private void searchForImage(final String cardName) {
-        String fullURL = url + "\"" + cardName + "\"";
+        String fullURL = url + cardName;
         Log.w(TAG, "search for image: " + fullURL);
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, fullURL, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 try {
-                    JSONArray cards = response.getJSONArray("cards");
-                    if (!(cards.length() > 0)){
+                    JSONObject card = response;
+                    if (card.getString("object") == "error"){
                         //Toast.makeText(CameraActivity.this, "No cards found by that name",Toast.LENGTH_SHORT).show();
                         Log.w(TAG, "No cards found by name " + cardName);
                         flag = false;
                         return;
                     }
-                    card = cards.getJSONObject(0);
 
-                    String imageURL = card.getString("imageUrl");
+                    String imageURL = card.getJSONObject("image_uris").getString("normal");
                     Log.w(TAG, "search for image: " + imageURL);
                     Picasso.get().load(imageURL).into(cardView);
                     updateUI(VIEW_CARD_CODE);
@@ -207,7 +210,7 @@ public class CameraActivity extends AppCompatActivity implements View.OnClickLis
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-
+                flag = false;
             }
         });
         queue.add(jsonObjectRequest);

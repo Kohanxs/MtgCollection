@@ -131,6 +131,10 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
         Intent temp = new Intent(this,ScanActivity.class);
         startActivity(temp);
     }
+    private void toUserMenu(){
+        Intent temp = new Intent(this, UserActivity.class);
+        startActivity(temp);
+    }
 
     private void logInWithEmail() {
 
@@ -139,6 +143,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if(task.isSuccessful()){
                     statusTextView.setText("Log In succsesful, hello: "+mAuth.getCurrentUser().getUid());
+                    toUserMenu();
 
                 } else {
                     statusTextView.setText("Log in failed");
@@ -215,6 +220,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
             Log.d(TAG,"handleSignInResult3");
             firebaseAuthWithGoogle(credential);
 
+
         }catch(ApiException e) {
             Log.w(TAG, "login unsuccessful" + e.getStatusCode());
         }
@@ -231,6 +237,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
                     FirebaseUser user = mAuth.getCurrentUser();
                     uploadNewUserData();
                     statusTextView.setText("Hello " + user.getDisplayName());
+                    toUserMenu();
                 } else {
                     Log.w(TAG,"signInWithCredentials:failure", task.getException());
                     statusTextView.setText("Failure");
